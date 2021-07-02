@@ -6,11 +6,11 @@ import activation
 import propagation
 
 nn_architecture = [
-    {"input_dimension": 2, "output_dimension": 4, "activation": "relu"},
-    {"input_dimension": 4, "output_dimension": 6, "activation": "relu"},
-    {"input_dimension": 6, "output_dimension": 6, "activation": "relu"},
-    {"input_dimension": 6, "output_dimension": 4, "activation": "relu"},
-    {"input_dimension": 4, "output_dimension": 1, "activation": "sigmoid"},
+    {"input_dimension": 783, "output_dimension": 100, "activation": "relu"},
+    {"input_dimension": 100, "output_dimension": 100, "activation": "relu"},
+    {"input_dimension": 100, "output_dimension": 100, "activation": "relu"},
+    {"input_dimension": 100, "output_dimension": 20, "activation": "relu"},
+    {"input_dimension": 20, "output_dimension": 10, "activation": "sigmoid"},
 ]
 
 def init_layers(nn_architecture, seed = 99):
