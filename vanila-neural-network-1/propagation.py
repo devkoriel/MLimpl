@@ -11,6 +11,8 @@ def single_layer_forward_propagation(A_prev, W_curr, b_curr, activation="relu"):
         activation_func = relu
     elif activation is "sigmoid":
         activation_func = sigmoid
+    elif activation is "softmax":
+        activation_func = softmax
     else:
         raise Exception('Non-supported activation function')
         
@@ -46,7 +48,7 @@ def full_forward_propagation(X, params_values, nn_architecture):
     # return of prediction vector and a dictionary containing intermediate values
     return A_curr, memory
 
-def single_layer_backward_propagation(dA_curr, W_curr, b_curr, Z_curr, A_prev, activation="relu"):
+def single_layer_backward_propagation(dA_curr, W_curr, b_curr, Z_curr, A_prev, Y_hat, Y, activation="relu"):
     # number of examples
     m = A_prev.shape[1]
     
@@ -55,11 +57,16 @@ def single_layer_backward_propagation(dA_curr, W_curr, b_curr, Z_curr, A_prev, a
         backward_activation_func = relu_backward
     elif activation is "sigmoid":
         backward_activation_func = sigmoid_backward
+    elif activation is "softmax":
+        backward_activation_func = softmax_backward
     else:
         raise Exception('Non-supported activation function')
     
     # calculation of the activation function derivative
-    dZ_curr = backward_activation_func(dA_curr, Z_curr)
+    if activation is "softmax":
+        dZ_curr = backward_activation_func(Y_hat, Y)
+    else:
+        dZ_curr = backward_activation_func(dA_curr, Z_curr)
     
     # derivative of the matrix W
     dW_curr = np.dot(dZ_curr, A_prev.T) / m
@@ -79,7 +86,7 @@ def full_backward_propagation(Y_hat, Y, memory, params_values, nn_architecture):
     Y = Y.reshape(Y_hat.shape)
     
     # initiation of gradient descent algorithm
-    dA_prev = - (np.divide(Y, Y_hat) - np.divide(1 - Y, 1 - Y_hat));
+    dA_prev = - (np.divide(Y, Y_hat) - np.divide(1 - Y, 1 - Y_hat))
     
     for layer_idx_prev, layer in reversed(list(enumerate(nn_architecture))):
         # we number network layers from 1
@@ -96,7 +103,7 @@ def full_backward_propagation(Y_hat, Y, memory, params_values, nn_architecture):
         b_curr = params_values["b" + str(layer_idx_curr)]
         
         dA_prev, dW_curr, db_curr = single_layer_backward_propagation(
-            dA_curr, W_curr, b_curr, Z_curr, A_prev, activ_function_curr)
+            dA_curr, W_curr, b_curr, Z_curr, A_prev, Y_hat, Y, activ_function_curr)
         
         grads_values["dW" + str(layer_idx_curr)] = dW_curr
         grads_values["db" + str(layer_idx_curr)] = db_curr

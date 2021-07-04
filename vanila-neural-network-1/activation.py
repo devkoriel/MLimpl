@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 
 def sigmoid(Z):
@@ -14,3 +16,9 @@ def relu_backward(dA, Z):
     dZ = np.array(dA, copy = True)
     dZ[Z <= 0] = 0
     return dZ
+
+def softmax(Z):
+    return np.exp(Z) / np.sum(np.exp(Z), axis=0)
+
+def softmax_backward(Y_hat, Y):
+    return Y_hat - Y

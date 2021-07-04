@@ -11,9 +11,9 @@ from propagation import *
 NN_ARCHITECTURE = [
     {"input_dimension": 784, "output_dimension": 500, "activation": "relu"},
     {"input_dimension": 500, "output_dimension": 500, "activation": "relu"},
-    {"input_dimension": 500, "output_dimension": 300, "activation": "relu"},
-    {"input_dimension": 300, "output_dimension": 100, "activation": "relu"},
-    {"input_dimension": 100, "output_dimension": 10, "activation": "sigmoid"},
+    {"input_dimension": 500, "output_dimension": 500, "activation": "relu"},
+    {"input_dimension": 500, "output_dimension": 100, "activation": "relu"},
+    {"input_dimension": 100, "output_dimension": 10, "activation": "softmax"},
 ]
 
 def init_layers(nn_architecture, seed = 99):
@@ -119,9 +119,14 @@ if __name__ == '__main__':
 
     # Test
     Y_test_hat, _ = full_forward_propagation(np.transpose(testX), params_values, NN_ARCHITECTURE)
-
     Y_test_hat = Y_test_hat.T
 
-    for y_test_hat in Y_test_hat.tolist():
-        result = y_test_hat.index(max(y_test_hat))
-        print()
+    with open('./submission.csv', 'w') as f:
+        writer = csv.writer(f)
+
+        # write a row to the csv file
+        writer.writerow(["ImageId","Label"])
+
+        for index, y_test_hat in enumerate(Y_test_hat.tolist()):
+            result = y_test_hat.index(max(y_test_hat))
+            writer.writerow([index, result])
